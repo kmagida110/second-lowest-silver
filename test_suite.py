@@ -1,8 +1,9 @@
 import unittest
 import pandas as pd
-from file_processor import formatted_print
+from file_processor import formatted_print, FileProcessor
 
 TEST_PLAN_FILE = 'data/test_plans.csv'
+TEST_ZIP_FILE = 'data/test_zips.csv'
 
 
 class TestSuite(unittest.TestCase):
@@ -26,6 +27,21 @@ class TestSuite(unittest.TestCase):
 
         # Check that no silver plan is not added to the final dictionary
         self.assertNotIn('IL-5', expected_result)
+
+    def test_check_lookup(self):
+
+        expected_result = FileProcessor.get_rate_code_lookup(TEST_ZIP_FILE)
+
+        # Check that inputs processed correctly and zips return the right region
+        self.assertEqual(expected_result['36749'], 'AL-11')
+        self.assertEqual(expected_result['36703'], 'AL-11')
+        self.assertEqual(expected_result['84310'], 'UT-2')
+
+        # Check that leading zeros were maintained
+        self.assertEqual(expected_result['05770'], 'VT-1')
+
+        # Check the conflicted rows were dropped
+        self.assertIsNone(expected_result.get('84409'))
 
     def test_proper_output(self):
         """
