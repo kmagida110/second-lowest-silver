@@ -6,7 +6,7 @@ This code can be run in a Python 3.6 environment with the packages in requiremen
 
 - Run `virtualenv "venv" --python=python3` in repository base folder to create a virtual environment to run the code in.
   - To install virtualenv on your machine follow these [virtualenv installation instructions.](https://virtualenv.pypa.io/en/latest/installation/) 
-- Run `source venv/bin/activate` to activate the virtual environment
+- Run `source venv/bin/activate` to activate the virtual environment (All other commands assume the user is in this virtual environment)
 - Install packages by running `pip3 install -r requirements.txt`
 
 ## Testing instructions
@@ -16,6 +16,8 @@ Tests are written in `test_suite.py` and some refer to `data/test_plans.csv` whi
 Tests can be run by calling `pytest test_suite.py` in the base folder of the repository.
 
 ## Running instructions
+
+To run the main file call `python3 file_processor.py` from the command line.
 
 ### Logic assumptions
 

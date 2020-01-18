@@ -15,6 +15,31 @@ RATE_AREA_NAME = 'rate_area_name'
 SILVER_IDENTIFIER = 'Silver'
 RANK_COL = 'group_rank'
 
+# File locations
+PLAN_FILE = 'data/plans.csv'
+ZIP_FILE = 'data/zips.csv'
+INPUT_FILE = 'data/slcsp.csv'
+
+def get_rate_area_name(df):
+    """
+    Standard function to combine state and rate area columns to
+    :param df:
+    :return:
+    """
+
+    return df['state'] + '-' + df['rate_area']
+
+
+def formatted_print(zip_code, rate):
+    """
+    Returns formatted string for printing to stdout to conform with the requirements with two decimal places on the rate
+    and the full zip code separated by a comma. Null rates should not print anything following the comma.
+    :param zip_code: <string> zip code
+    :param rate: <float> rate with unrounded
+    :return:
+    """
+    rate_string = f"{rate:.2f}" if rate else ''
+    return f"{zip_code},{rate_string}"
 
 class FileProcessor:
 
@@ -59,8 +84,9 @@ class FileProcessor:
         """
         Reads in CSV from plan_file_path containing plan information and returns a dictionary that looks up the second
         lowest cost silver plan in every rate area.
-        :param plan_file_path: file path to CSV that has a header
-        :return:
+        :param plan_file_path: <string> file path to CSV that has a header that includes metal_level, state, rate_area and rate
+        :return: <dict> with keys of rate areas formatted as State abbreviation-rate area number, eg. (AK-1) and values
+        as the second lowest silver rates as floats.
         """
         plan_df = pd.read_csv(plan_file_path, dtype={RATE_AREA: 'str'})
 
@@ -72,7 +98,7 @@ class FileProcessor:
 
         # Group all the silver plans by their rate area and create a new column that ranks them from lowest to highest
         # Plans with the same rate will be assigned ranks based on their order in the dataframe (method='first'
-        # specifies this logic). T
+        # specifies this logic).
         silver_df[RANK_COL] = silver_df.groupby(by=RATE_AREA_NAME)[RATE_VALUE].rank(method='first')
 
         # Only keep plans that have the second lowest cost in the group. (in some cases this may return the lowest cost
@@ -85,26 +111,38 @@ class FileProcessor:
 
         return area_to_rate_lookup
 
+    def process_zip_code(self, zip_code):
+        """
+        Looks up rate area and associated second lowest silver plan cost for the provided zip code and prints the
+        results to stdout with the proper formatting.
+        :param zip_code: <string> Assumed 5 digit zip code that is potentially in the rate area lookup
+        :return: None, prints row to screen
+        """
 
-def get_rate_area_name(df):
-    """
-    Standard function to combine state and rate area columns to
-    :param df:
-    :return:
-    """
+        # Get rate area from rate area lookup if it exists
+        rate_area = self.rate_code_lookup.get(zip_code)
 
-    return df['state'] + '-' + df['rate_area']
+        # Get second lowest silver plan cost from lookup, or None if it does not exist
+        rate = self.second_lowest_cost_lookup.get(rate_area) if rate_area else None
+
+        formatted_string = formatted_print(zip_code, rate)
+        # Process zip code will be called in a loop so each instance will print on a new line
+        print(formatted_string)
 
 
-def formatted_print(zip_code, rate):
-    """
-    Returns formatted string for printing to stdout to conform with the requirements with two decimal places on the rate
-    and the full zip code separated by a comma. Null rates should not print anything following the comma.
-    :param zip_code: <string> zip code
-    :param rate: <float> rate with unrounded
-    :return:
-    """
-    rate_string = f"{rate:.2f}" if rate else ''
-    return f"{zip_code},{rate_string}"
+if __name__ == '__main__':
 
+    # Initialize file processor with files to create rate
+    file_processor = FileProcessor(rate_area_lookup_path=ZIP_FILE, plan_file_path=PLAN_FILE)
+
+    # Print headers
+
+    with open(INPUT_FILE,'r') as f:
+        lines = f.readlines()
+        print(f"{ZIP_CODE},{RATE_VALUE}")
+        # Skip header
+        for line in lines[1:]:
+            # Zip code should be the first item in the comma separated list
+            zip_code = line.split(',')[0]
+            file_processor.process_zip_code(zip_code)
 
