@@ -9,10 +9,14 @@ This code can be run in a Python 3.6 environment with the packages in requiremen
 - Run `source venv/bin/activate` to activate the virtual environment
 - Install packages by running `pip3 install -r requirements.txt`
 
-
 ## Testing instructions
 
 Tests are written in `test_suite.py` and some refer to `data/test_plans.csv` which is included in the repository.
 
 Tests can be run by calling `pytest test_suite.py` in the base folder of the repository.
 
+## Running instructions
+
+### Logic assumptions
+
+- If two silver plans had the same costs as each other and the lowest cost in their rate area, I assumed that cost was considered the second lowest cost silver plan.
