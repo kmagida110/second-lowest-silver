@@ -1,5 +1,9 @@
 # second-lowest-silver
 
+The code in this repository applies to the [SLCSP assignment](https://homework.adhoc.team/slcsp/) by processing the given files to return the second lowest cost silver plan associated certain zip codes. The main function and the majority of the code is in `file_processor.py`. Tests can be found in `test_suite.py`
+
+This README also functions as the requested COMMENTS file.
+
 ## Installation instructions
 
 This code can be run in a Python 3.6 environment with the packages in requirements.txt installed. The steps below will set up a fresh virtual environment with the appropriate packages. 
@@ -22,3 +26,13 @@ To run the main file call `python3 file_processor.py` from the command line.
 ### Logic assumptions
 
 - If two silver plans had the same costs as each other and the lowest cost in their rate area, I assumed that cost was considered the second lowest cost silver plan.
+
+## Files
+
+- data/ contains files downloaded from [Adhoc homework for slscp](https://homework.adhoc.team/slcsp/)
+- requirements.txt - packages used in these scripts
+- test_suite.py - Tests written to verify particular functions
+- file_processor.py - Main file with processing class and main function
+- spot_checker.ipynb - Ipython notebook used to spot check values manually, this is not needed to run the script, 
+this requires jupyterlab to installed, [JuptyerLab provides these installation instructions](https://jupyter.org/install)
+if needed.

@@ -61,21 +61,21 @@ class FileProcessor:
         """
 
         # Convert zip codes and other codes to strings to have them format correctly and not drop leading zeros
-        rate_df = pd.read_csv(rate_code_lookup_path, dtype={ZIP_CODE: 'str', RATE_AREA: 'str', COUNTY_CODE: 'str'})
+        rate_area_df = pd.read_csv(rate_code_lookup_path, dtype={ZIP_CODE: 'str', RATE_AREA: 'str', COUNTY_CODE: 'str'})
 
         # Set single name for a rate area
-        rate_df[RATE_AREA_NAME] = get_rate_area_name(rate_df)
+        rate_area_df[RATE_AREA_NAME] = get_rate_area_name(rate_area_df)
 
         # Remove rows where county different but zip and rate area are the same, this arbitrarily keeps the first row
         # but for the purposes of the lookup they are the same
 
-        deduped_df = rate_df.drop_duplicates(subset=[ZIP_CODE, RATE_AREA_NAME], keep='first')
+        deduped_df = rate_area_df.drop_duplicates(subset=[ZIP_CODE, RATE_AREA_NAME], keep='first')
 
         # Drop all ambiguous zip codes with multiple rows
-        deduped_rate_df = deduped_df.drop_duplicates(subset=ZIP_CODE, keep=False)
+        deduped_rate_area_df = deduped_df.drop_duplicates(subset=ZIP_CODE, keep=False)
 
         # Convert dataframe to dictionary with zipcode as a key and rate area name as a value
-        zip_to_rate_lookup = deduped_rate_df.set_index(ZIP_CODE)[RATE_AREA_NAME].to_dict()
+        zip_to_rate_lookup = deduped_rate_area_df.set_index(ZIP_CODE)[RATE_AREA_NAME].to_dict()
 
         return zip_to_rate_lookup
 
