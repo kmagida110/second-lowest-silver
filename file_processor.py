@@ -43,7 +43,7 @@ def formatted_print(zip_code, rate):
 
 class FileProcessor:
 
-    def __init__(self, plan_file_path, rate_area_lookup_path):
+    def __init__(self, plan_file_path=PLAN_FILE, rate_area_lookup_path=ZIP_FILE):
 
         self.rate_code_lookup = self.get_rate_code_lookup(rate_area_lookup_path)
         self.second_lowest_cost_lookup = self.get_second_lowest_cost_lookup(plan_file_path)
@@ -99,7 +99,7 @@ class FileProcessor:
         # Group all the silver plans by their rate area and create a new column that ranks them from lowest to highest
         # Plans with the same rate will be assigned ranks based on their order in the dataframe (method='first'
         # specifies this logic).
-        silver_df[RANK_COL] = silver_df.groupby(by=RATE_AREA_NAME)[RATE_VALUE].rank(method='first')
+        silver_df[RANK_COL] = silver_df.groupby(by=RATE_AREA_NAME)[RATE_VALUE].rank(method='dense')
 
         # Only keep plans that have the second lowest cost in the group. (in some cases this may return the lowest cost
         # plan if there are two plans with the same cost that is also the lowest.

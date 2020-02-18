@@ -11,16 +11,15 @@ class TestSuite(unittest.TestCase):
         """
         Test whether the find second lowest function works on a small set of test data
         """
-
         expected_result = FileProcessor.get_second_lowest_cost_lookup(TEST_PLAN_FILE)
 
         # Check that the two region that should have second best rates are included and correct
         self.assertEqual(expected_result['GA-7'], 300.62)
         self.assertEqual(expected_result['MI-4'], 150.6767)
 
-        # Check that two plan that were both the lowest returns the cost as the second lowest
+        # Check that two plan that were both the lowest returns the third item as the second lowest
         # (see assumption in comments)
-        self.assertEqual(expected_result['TX-15'], 249.89)
+        self.assertEqual(expected_result['TX-15'], 260.05)
 
         # Check that only one silver isn't added to the final dictionary
         self.assertNotIn('FL-60', expected_result)
